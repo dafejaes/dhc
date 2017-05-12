@@ -60,6 +60,8 @@ class ControllerUser {
             $this->usrprfsave();
         } else if ($this->op == 'usrdelete') {
             $this->usrdelete();
+        } else if ($this->op == 'usrvar') {
+            $this->usrvar();
         } else if ($this->op == 'noautorizado') {
             $this->response = $this->UTILITY->error_invalid_authorization();
         } else {
@@ -282,6 +284,18 @@ class ControllerUser {
         } else {
             $arrjson = $this->UTILITY->error_missing_data();
         }
+        $this->response = ($arrjson);
+    }
+    
+     private function usrvar() {
+        //se consultan los perfiles asignados
+        $q = "SELECT var_nombre, var_valor, var_unidad FROM dhc_usuario_dhc_variable, dhc_variable WHERE dhc_usuario_usr_id = 1 AND dhc_variable.var_id = dhc_usuario_dhc_variable.dhc_variable_var_id =". $this->id;
+        $con = mysql_query($q, $this->conexion) or die(mysql_error() . "***ERROR: " . $q);
+        $arrvariables = array();
+        while ($obj = mysql_fetch_object($con)) {
+            $arrvariables[] = array('nombre' => $obj->var_nombre, 'valor' => $obj->var_valor, 'unidad' => $obj->var_unidad);
+        }
+        $arrjson = array('output' => array('valid' => true, 'variables' => $arrvariables));
         $this->response = ($arrjson);
     }
 

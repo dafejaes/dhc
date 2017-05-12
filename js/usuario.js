@@ -80,6 +80,23 @@ function initusuario() {
 	}
     });
     
+      $("#dialog-variables").dialog({
+	autoOpen: false, 
+	height: 330, 
+	width: 330, 
+	modal: true,
+	buttons: {
+	    "Salir": function() {
+		UTIL.clearForm('formvariable');
+		$(this).dialog("close");
+	    }
+	},
+	close: function() {
+	    UTIL.clearForm('formvariable');
+	    updateTips('');
+	}
+    });
+    
     USUARIO.getcustomer();
 }
 
@@ -228,6 +245,26 @@ var USUARIO = {
 	    updateTips('Información guardada correctamente');
 	    window.location = 'usuario.php';
 	} else {
+	    updateTips('Error: ' + data.output.response.content);
+	}
+    },
+    getVariables: function(id){
+        q.op = 'usrvar';
+	q.id = id;
+	UTIL.callAjaxRqst(q, this.getVariableshandler);
+    },
+    getVariableshandler: function(data){
+        UTIL.cursorNormal();
+        if(data.output.valid){
+            var list= '<ul>';
+            var variables = data.output.variables;
+            for (var i in variables){
+                list += '<li>' + variables[i].nombre + ': ' + variables[i].valor + ' ' + variables[i].unidad + '<li>';
+            }
+            $("#formvariable").empty();
+	    $("#formvariable").append(list);
+            $("#dialog-variables").dialog("open");
+        }else {
 	    updateTips('Error: ' + data.output.response.content);
 	}
     }

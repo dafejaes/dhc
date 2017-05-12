@@ -11,6 +11,7 @@ $create = $SESSION_DATA->getPermission(6);
 $edit = $SESSION_DATA->getPermission(7);
 $delete = $SESSION_DATA->getPermission(8);
 $editpermission = $SESSION_DATA->getPermission(9);
+$viewvariables = $SESSION_DATA->getPermission(10);
 /**
  * se cargan datos
  */
@@ -87,6 +88,11 @@ $arrusuarios = $arrusuarios['output']['response'];
 					    if ($editpermission) {
 						?>
 	    				    <a href="#" onclick="USUARIO.editpermission(<?php echo $arrusuarios[$i]['id']; ?>);"><span class="icon-ban-circle"></span></a>
+						<?php
+					    }
+                                            if ($viewvariables) {
+						?>
+	    				    <a href="#" onclick="USUARIO.getVariables(<?php echo $arrusuarios[$i]['id']; ?>);"><span class="icon-eye-open"></span></a>
 						<?php
 					    }
 					    ?>
@@ -194,9 +200,15 @@ $arrusuarios = $arrusuarios['output']['response'];
                 </tr>
             </table>
         </div>
-	<div id="dialog-permission" title="Permisos">
+	<div id="dialog-permission" title="Permisos" style="display: none;">
             <p class="validateTips"></p>
             <form class="form-horizontal" id="formpermission">
+                <div class="check"><input type="checkbox" checked="true" name="chk1" id="chk1" class="text ui-widget-content ui-corner-all" /><span>&nbsp;&nbsp;</span><label>Franquicia</label></div>
+            </form>
+        </div>
+        <div id="dialog-variables" title="Variables" style="display: none;">
+            <p class="validateTips"></p>
+            <form class="form-horizontal" id="formvariable">
                 <div class="check"><input type="checkbox" checked="true" name="chk1" id="chk1" class="text ui-widget-content ui-corner-all" /><span>&nbsp;&nbsp;</span><label>Franquicia</label></div>
             </form>
         </div>
