@@ -289,7 +289,7 @@ class ControllerUser {
     
      private function usrvar() {
         //se consultan los perfiles asignados
-        $q = "SELECT var_nombre, var_valor, var_unidad FROM dhc_usuario_dhc_variable, dhc_variable WHERE dhc_usuario_usr_id = 1 AND dhc_variable.var_id = dhc_usuario_dhc_variable.dhc_variable_var_id =". $this->id;
+        $q = "SELECT var_nombre, var_valor, var_unidad FROM dhc_usuario_dhc_variable, dhc_variable WHERE dhc_usuario_usr_id = " . $this->id. " AND dhc_variable.var_id = dhc_usuario_dhc_variable.dhc_variable_var_id";
         $con = mysql_query($q, $this->conexion) or die(mysql_error() . "***ERROR: " . $q);
         $arrvariables = array();
         while ($obj = mysql_fetch_object($con)) {
