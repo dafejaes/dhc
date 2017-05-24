@@ -13,7 +13,7 @@ if ($op == 'inssave' || $op == 'insget' || $op == 'insdelete') {
     include '../lib/ControllerInstitution.php';
     $CONTROL = new ControllerInstitution();
     echo $CONTROL->getResponseJSON();
-} else if ($op == 'usrsave' || $op == 'usrget' || $op == 'usrdelete' || $op == 'usrlogin' || $op == 'usrprfget' || $op == 'usrprfsave' || $op == 'usrvar') {
+} else if ($op == 'usrsave' || $op == 'usrget' || $op == 'usrdelete' || $op == 'usrlogin' || $op == 'usrprfget' || $op == 'usrprfsave' || $op == 'usrvar' || $op=='usrloadvar') {
     include '../lib/ControllerUser.php';
     $CONTROL = new ControllerUser();
     echo $CONTROL->getResponseJSON();

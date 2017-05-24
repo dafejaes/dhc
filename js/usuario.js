@@ -1,5 +1,5 @@
 $(document).on('ready', initusuario);
-var q, nombre,  allFields, tips;
+var q, nombre,  allFields, tips, variablesData, selectedUserId;
 
 /**
  * se activa para inicializar el documento
@@ -96,11 +96,63 @@ function initusuario() {
 	    updateTips('');
 	}
     });
+     $("#dialog-cargar").dialog({
+	autoOpen: false, 
+	height: 580, 
+	width: 900, 
+	modal: true,
+	buttons: {
+	    "Guardar": function() {
+		allFields.removeClass("ui-state-error");
+		if (variablesData !== undefined && variablesData !== null && variablesData !== "") {
+		    USUARIO.saveImportedVariables(selectedUserId);
+		}else{
+                    alert ("No hay datos para gargarle al usuario");
+                }
+	    },"Salir": function() {
+		UTIL.clearForm('formcargar');
+		$(this).dialog("close");
+	    }
+	},
+	close: function() {
+	    UTIL.clearForm('formcargar');
+	    updateTips('');
+	}
+    });
     
     USUARIO.getcustomer();
+    document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
 }
 
-    
+function readSingleFile(evt) {
+    //Retrieve the first (and only!) File from the FileList object
+    var f = evt.target.files[0]; 
+    var tabledata="<tr><th>Presión</th><th>Temperatura</th><th>Frecuencia cardiaca</th><th>Frecuencia respiratoria</th><th>SPO2</th><th>Fecha</th></tr>";
+    if (f) {
+      var r = new FileReader();
+      r.onload = function(e) { 
+	      var contents = e.target.result;
+              variablesData = contents;//Se guarda el valor leído en el archivo de texto como un string
+              var studies = contents.split(";");
+              for(var i in studies){
+                var singleStudie=studies[i];
+                var variablesArray = singleStudie.split(",");
+                var pressure = variablesArray[0];
+                var temperature = variablesArray[1];
+                var heartRate = variablesArray[2];
+                var breathRate = variablesArray[3];
+                var sop2 = variablesArray[4];
+                var date = variablesArray[5];
+                tabledata+="<tr><td>"+pressure+"</td><td>"+temperature+"</td><td>"+heartRate+"</td><td>"+breathRate+"</td><td>"+sop2+"</td><td>"+date+"</td></tr>";
+                $("#variables_table").empty();
+                $("#variables_table").append(tabledata);
+          }
+      };
+      r.readAsText(f);
+    } else { 
+      alert("No se puede cargar el archivo");
+    }
+  }    
 
 var USUARIO = {
     deletedata: function(id) {
@@ -197,9 +249,11 @@ var USUARIO = {
     },
     savepermission: function() {
 	var chk = '';
-	var inputs = document.getElementById('formpermission').getElementsByTagName("input"); // get element by tag name
-	for (var i in inputs) {
-	    if (inputs[i].type == "checkbox") {
+	//var inputs = document.getElementById('formpermission').getElementsByTagName("input"); // get element by tag name
+	
+        var inputs = $('#formpermission').find('input');
+        for (var i in inputs) {
+	    if (inputs[i].type === "checkbox") {
 		if($("#"+inputs[i].id).is(':checked')) {  
 		    chk += $("#"+inputs[i].id).val()+'-';
 		}
@@ -267,5 +321,24 @@ var USUARIO = {
         }else {
 	    updateTips('Error: ' + data.output.response.content);
 	}
+    },
+    showUploadDataForm: function(id){
+        $("#dialog-cargar").dialog("open");
+        selectedUserId = id;
+    },
+    saveImportedVariables: function(id){
+        q.op = 'usrloadvar';
+	q.id = id;//user id
+        q.data = variablesData;
+	UTIL.callAjaxRqst(q, this.saveImportedVariablesHandler);
+    },
+    saveImportedVariablesHandler: function(data){
+        UTIL.cursorNormal();
+        if(data.output.valid){
+            updateTips('Información guardada correctamente');
+	    window.location = 'usuario.php';
+        }else {
+	    updateTips('Error: ' + data.output.response.content);
+	}
     }
-}
+};

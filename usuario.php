@@ -12,6 +12,7 @@ $edit = $SESSION_DATA->getPermission(7);
 $delete = $SESSION_DATA->getPermission(8);
 $editpermission = $SESSION_DATA->getPermission(9);
 $viewvariables = $SESSION_DATA->getPermission(10);
+$uploaddata = $SESSION_DATA->getPermission(11);
 /**
  * se cargan datos
  */
@@ -92,7 +93,12 @@ $arrusuarios = $arrusuarios['output']['response'];
 					    }
                                             if ($viewvariables) {
 						?>
-	    				    <a href="#" onclick="USUARIO.getVariables(<?php echo $arrusuarios[$i]['id']; ?>);"><span class="icon-eye-open"></span></a>
+	    				    <a href="#" onclick="USUARIO.getVariables(<?php echo $arrusuarios[$i]['id']; ?>);"><span class="icon-eye-open"></span></a><span>&nbsp;&nbsp;</span>
+						<?php
+					    }
+                                            if ($uploaddata) {
+						?>
+	    				    <a href="#" onclick="USUARIO.showUploadDataForm(<?php echo $arrusuarios[$i]['id']; ?>);"><span class="icon-upload"></span></a><span>&nbsp;&nbsp;</span>
 						<?php
 					    }
 					    ?>
@@ -203,13 +209,23 @@ $arrusuarios = $arrusuarios['output']['response'];
 	<div id="dialog-permission" title="Permisos" style="display: none;">
             <p class="validateTips"></p>
             <form class="form-horizontal" id="formpermission">
-                <div class="check"><input type="checkbox" checked="true" name="chk1" id="chk1" class="text ui-widget-content ui-corner-all" /><span>&nbsp;&nbsp;</span><label>Franquicia</label></div>
             </form>
         </div>
         <div id="dialog-variables" title="Variables" style="display: none;">
             <p class="validateTips"></p>
             <form class="form-horizontal" id="formvariable">
-                <div class="check"><input type="checkbox" checked="true" name="chk1" id="chk1" class="text ui-widget-content ui-corner-all" /><span>&nbsp;&nbsp;</span><label>Franquicia</label></div>
+            </form>
+        </div>
+        <div id="dialog-cargar" title="Cargar datos" style="display: none;">
+            <p class="validateTips"></p>
+            <form class="form-horizontal" id="formcargar">
+                <div class="control-group">
+                    <input type="file" id="fileinput" /><label for="files">Seleccione archivo de datos del usuario</label>
+                </div>
+                    
+                <table id="variables_table" class="table table-hover dyntable">
+                    
+                </table>
             </form>
         </div>
 	<?php include 'include/generic_script.php'; ?>

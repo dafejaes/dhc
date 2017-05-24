@@ -43,3 +43,10 @@ INSERT INTO `dhc_usuario_dhc_variable` (`dhc_usuario_usr_id`, `dhc_variable_var_
 INSERT INTO dhc_usuario_has_dhc_perfiles (dhc_usuario_usr_id, dhc_perfiles_prf_id, dtcreate) VALUES 
 ('1', '10', NOW()),
 ('3', '10', NOW());
+
+--CAMBIOS 22 MAYO 2017--
+--SE CREA CAMPO PARA LA FECHA Y HORA DE LA TOMA DE LA MEDIDA --
+ALTER TABLE `dhc_usuario_dhc_variable` ADD `var_fecha_hora` DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP AFTER `var_valor`;
+-- SE CREA EL NUEVO PERFIL PARA CARGAR VARIABLES DESDE UN ARCHIVO DE TXT--
+INSERT INTO `dhc_perfiles` (`prf_id`, `prf_nombre`, `prf_descripcion`) VALUES
+(11, 'Usuarios - Cargar datos', NULL);

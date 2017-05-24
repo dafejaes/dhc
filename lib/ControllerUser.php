@@ -62,6 +62,9 @@ class ControllerUser {
             $this->usrdelete();
         } else if ($this->op == 'usrvar') {
             $this->usrvar();
+        } else if($this->op == 'usrloadvar'){
+            $this->data = isset($rqst['data']) ? $rqst['data'] : '';
+            $this->usrloadvar();
         } else if ($this->op == 'noautorizado') {
             $this->response = $this->UTILITY->error_invalid_authorization();
         } else {
@@ -289,13 +292,29 @@ class ControllerUser {
     
      private function usrvar() {
         //se consultan los perfiles asignados
-        $q = "SELECT var_nombre, var_valor, var_unidad FROM dhc_usuario_dhc_variable, dhc_variable WHERE dhc_usuario_usr_id = " . $this->id. " AND dhc_variable.var_id = dhc_usuario_dhc_variable.dhc_variable_var_id";
+        $q = "SELECT var_nombre, var_valor, var_unidad, var_fecha_hora FROM dhc_usuario_dhc_variable, dhc_variable WHERE dhc_usuario_usr_id = " . $this->id. " AND dhc_variable.var_id = dhc_usuario_dhc_variable.dhc_variable_var_id";
         $con = mysql_query($q, $this->conexion) or die(mysql_error() . "***ERROR: " . $q);
         $arrvariables = array();
         while ($obj = mysql_fetch_object($con)) {
             $arrvariables[] = array('nombre' => $obj->var_nombre, 'valor' => $obj->var_valor, 'unidad' => $obj->var_unidad);
         }
         $arrjson = array('output' => array('valid' => true, 'variables' => $arrvariables));
+        $this->response = ($arrjson);
+    }
+    
+    private function usrloadvar(){
+        if ($this->id > 0) {
+            //actualiza la informacion
+            $arrstudies = explode(';', $this->data);
+            for ($i = 0; $i < count($arrstudies); $i++) {
+                $arrvariables = explode(',', $arrstudies[$i]);
+                $q = "INSERT INTO `dhc_usuario_dhc_variable` (`dhc_usuario_usr_id`, `dhc_variable_var_id`, `var_valor`, `var_fecha_hora`) VALUES (".$this->id.", 1, '".$arrvariables[0]."','".$arrvariables[5]."'), (".$this->id.", 2, '".$arrvariables[1]."', '".$arrvariables[5]."'), (".$this->id.", 3, '".$arrvariables[2]."', '".$arrvariables[5]."'), (".$this->id.", 4, '".$arrvariables[3]."', '".$arrvariables[5]."'), (".$this->id.", 5, '".$arrvariables[4]."', '".$arrvariables[5]."')";    
+                mysql_query($q, $this->conexion) or die(mysql_error() . "***ERROR: " . $q);    
+            }
+            $arrjson = array('output' => array('valid' => true, 'id' => $this->id));
+        } else {
+            $arrjson = $this->UTILITY->error_missing_data();
+        }
         $this->response = ($arrjson);
     }
 
