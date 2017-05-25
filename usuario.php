@@ -13,6 +13,7 @@ $delete = $SESSION_DATA->getPermission(8);
 $editpermission = $SESSION_DATA->getPermission(9);
 $viewvariables = $SESSION_DATA->getPermission(10);
 $uploaddata = $SESSION_DATA->getPermission(11);
+$viewowndata = $SESSION_DATA->getPermission(12);
 /**
  * se cargan datos
  */
@@ -21,6 +22,19 @@ $USUARIO->usrget();
 $arrusuarios = $USUARIO->getResponse();
 $isvalid = $arrusuarios['output']['valid'];
 $arrusuarios = $arrusuarios['output']['response'];
+$user;
+if($viewowndata){
+    for ($i = 0; $i < count($arrusuarios); $i++){
+        if($arrusuarios[$i]['id'] === $_SESSION['usuario']['id']){
+            $user = $arrusuarios[$i];
+            break;
+        }
+    }
+    if (!is_null($user)){
+        $arrusuarios = [];
+        $arrusuarios[0] = $user;
+    }
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -78,7 +92,7 @@ $arrusuarios = $arrusuarios['output']['response'];
 					    <?php
 					    if ($delete) {
 						?>
-	    				    <a href="#" onclick="USUARIO.editdata(<?php echo $arrusuarios[$i]['id']; ?>);"><span class="icon-pencil"></span></a><span>&nbsp;&nbsp;</span>
+                                            <a href="#" onclick="USUARIO.editdata(<?php echo $arrusuarios[$i]['id']; ?>);"><span class="icon-pencil"></span></a><span>&nbsp;&nbsp;</span>
 						<?php
 					    }
 					    if ($edit) {
@@ -213,6 +227,10 @@ $arrusuarios = $arrusuarios['output']['response'];
         </div>
         <div id="dialog-variables" title="Variables" style="display: none;">
             <p class="validateTips"></p>
+            <div class="form-horizontal">
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><select onchange="dateChange()" id="selectorfechas" name="selectorfechas" align="center" class="selectorfechas"></select><br>
+            </div>
+            <br>
             <form class="form-horizontal" id="formvariable">
             </form>
         </div>

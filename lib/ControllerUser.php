@@ -296,7 +296,7 @@ class ControllerUser {
         $con = mysql_query($q, $this->conexion) or die(mysql_error() . "***ERROR: " . $q);
         $arrvariables = array();
         while ($obj = mysql_fetch_object($con)) {
-            $arrvariables[] = array('nombre' => $obj->var_nombre, 'valor' => $obj->var_valor, 'unidad' => $obj->var_unidad);
+            $arrvariables[] = array('nombre' => $obj->var_nombre, 'valor' => $obj->var_valor, 'unidad' => $obj->var_unidad, 'fecha_hora' => $obj->var_fecha_hora);
         }
         $arrjson = array('output' => array('valid' => true, 'variables' => $arrvariables));
         $this->response = ($arrjson);

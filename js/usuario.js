@@ -1,5 +1,5 @@
 $(document).on('ready', initusuario);
-var q, nombre,  allFields, tips, variablesData, selectedUserId;
+var q, nombre,  allFields, tips, variablesData, selectedUserId, variables;
 
 /**
  * se activa para inicializar el documento
@@ -57,7 +57,7 @@ function initusuario() {
     $("#dialog-permission").dialog({
 	autoOpen: false, 
 	height: 530, 
-	width: 230, 
+	width: 330, 
 	modal: true,
 	buttons: {
 	    "Guardar": function() {
@@ -82,8 +82,8 @@ function initusuario() {
     
       $("#dialog-variables").dialog({
 	autoOpen: false, 
-	height: 330, 
-	width: 330, 
+	height: 430, 
+	width: 430, 
 	modal: true,
 	buttons: {
 	    "Salir": function() {
@@ -122,8 +122,24 @@ function initusuario() {
     
     USUARIO.getcustomer();
     document.getElementById('fileinput').addEventListener('change', readSingleFile, false);
+  
 }
 
+function dateChange(){
+    var seleccion = $('#selectorfechas').val();
+    
+    //Esto para mostrar la lista
+    var list= '<ul>';
+    debugger
+    for (var i in variables){
+        if(seleccion === variables[i].fecha_hora){
+            list += '<li><b>' + variables[i].nombre + '</b>: ' + variables[i].valor + ' ' + variables[i].unidad + '<li>';
+        }
+    }
+    debugger
+    $("#formvariable").empty();
+    $("#formvariable").append(list); 
+}
 function readSingleFile(evt) {
     //Retrieve the first (and only!) File from the FileList object
     var f = evt.target.files[0]; 
@@ -310,13 +326,20 @@ var USUARIO = {
     getVariableshandler: function(data){
         UTIL.cursorNormal();
         if(data.output.valid){
-            var list= '<ul>';
-            var variables = data.output.variables;
-            for (var i in variables){
-                list += '<li>' + variables[i].nombre + ': ' + variables[i].valor + ' ' + variables[i].unidad + '<li>';
+            variables = data.output.variables;
+            var fechas =[];
+            for(var j in variables){
+                fechas.push(variables[j].fecha_hora);
             }
-            $("#formvariable").empty();
-	    $("#formvariable").append(list);
+            var fechas_unicas = [];
+            var options = '<option value="seleccione">Seleccione fecha</option>';
+            $.each(fechas, function(i, el){
+                if($.inArray(el, fechas_unicas) === -1){ 
+                    fechas_unicas.push(el);
+                    options += '<option value="'+el+'">'+el+'</option>';
+                }
+            });
+            $('select[name="selectorfechas"]' ).append( options );
             $("#dialog-variables").dialog("open");
         }else {
 	    updateTips('Error: ' + data.output.response.content);

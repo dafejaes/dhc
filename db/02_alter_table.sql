@@ -50,3 +50,5 @@ ALTER TABLE `dhc_usuario_dhc_variable` ADD `var_fecha_hora` DATETIME NOT NULL DE
 -- SE CREA EL NUEVO PERFIL PARA CARGAR VARIABLES DESDE UN ARCHIVO DE TXT--
 INSERT INTO `dhc_perfiles` (`prf_id`, `prf_nombre`, `prf_descripcion`) VALUES
 (11, 'Usuarios - Cargar datos', NULL);
+INSERT INTO `dhc_perfiles` (`prf_id`, `prf_nombre`, `prf_descripcion`) VALUES
+(12, 'Usuarios - Ver solo cuenta propia', NULL);
