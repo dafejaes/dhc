@@ -14,6 +14,7 @@ $editpermission = $SESSION_DATA->getPermission(9);
 $viewvariables = $SESSION_DATA->getPermission(10);
 $uploaddata = $SESSION_DATA->getPermission(11);
 $viewowndata = $SESSION_DATA->getPermission(12);
+$viewgraphs = $SESSION_DATA->getPermission(13);
 /**
  * se cargan datos
  */
@@ -113,6 +114,11 @@ if($viewowndata){
                                             if ($uploaddata) {
 						?>
 	    				    <a href="#" onclick="USUARIO.showUploadDataForm(<?php echo $arrusuarios[$i]['id']; ?>);"><span class="icon-upload"></span></a><span>&nbsp;&nbsp;</span>
+						<?php
+					    }
+                                            if ($viewgraphs) {
+						?>
+	    				    <a href="#" onclick="USUARIO.getGraphs(<?php echo $arrusuarios[$i]['id']; ?>);"><span class="icon-picture"></span></a><span>&nbsp;&nbsp;</span>
 						<?php
 					    }
 					    ?>
@@ -246,10 +252,22 @@ if($viewowndata){
                 </table>
             </form>
         </div>
+        <div id="dialog-graficas" title="Gáficas" style="display: none;">
+            <p class="validateTips"></p>
+            <div class="form-horizontal">
+                <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</span><select onchange="variableChange()" id="selectorvariables" name="selectorvariables" align="center" class="selectorvariables"></select><br>
+            </div>
+            <br>
+            <form class="form-horizontal" id="formgrafica">
+                <canvas id="myChart" width="400px" height="400px"></canvas>
+            </form>
+        </div>
 	<?php include 'include/generic_script.php'; ?>
         <link rel="stylesheet" media="screen" href="css/dynamictable.css" type="text/css" />
         <script type="text/javascript" src="js/jquery/jquery-dataTables.js"></script>
         <script type="text/javascript" src="js/lib/data-sha1.js"></script>
         <script type="text/javascript" src="js/usuario.js"></script>
+        <script type="text/javascript" src="js/chart/Chart.js"></script>
+        <script type="text/javascript" src="js/chart/Chart.bundle.js"></script> 
     </body>
 </html>

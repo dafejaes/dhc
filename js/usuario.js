@@ -1,5 +1,5 @@
 $(document).on('ready', initusuario);
-var q, nombre,  allFields, tips, variablesData, selectedUserId, variables;
+var q, nombre,  allFields, tips, variablesData, selectedUserId, variables, variablesGraficas;
 
 /**
  * se activa para inicializar el documento
@@ -96,6 +96,22 @@ function initusuario() {
 	    updateTips('');
 	}
     });
+     $("#dialog-graficas").dialog({
+	autoOpen: false, 
+	height: 630, 
+	width: 630, 
+	modal: true,
+	buttons: {
+	    "Salir": function() {
+		//UTIL.clearForm('formgrafica');
+		$(this).dialog("close");
+	    }
+	},
+	close: function() {
+	    //UTIL.clearForm('formgrafica');
+	    updateTips('');
+	}
+    });
      $("#dialog-cargar").dialog({
 	autoOpen: false, 
 	height: 580, 
@@ -130,15 +146,45 @@ function dateChange(){
     
     //Esto para mostrar la lista
     var list= '<ul>';
-    debugger
     for (var i in variables){
         if(seleccion === variables[i].fecha_hora){
             list += '<li><b>' + variables[i].nombre + '</b>: ' + variables[i].valor + ' ' + variables[i].unidad + '<li>';
         }
     }
-    debugger
     $("#formvariable").empty();
     $("#formvariable").append(list); 
+}
+
+function variableChange(){
+    //GRaficas
+    var seleccion = $('#selectorvariables').val();
+    var labels = [];
+    var dat = [];
+    var unidad;
+    for (var i in variablesGraficas){
+        if(seleccion === variablesGraficas[i].nombre){
+            labels.push(variablesGraficas[i].fecha_hora);
+            dat.push(variablesGraficas[i].valor);
+            unidad = variablesGraficas[i].unidad;
+        }
+    }
+    var ctx = document.getElementById("myChart");
+    var params = {
+            "type":"line",
+            "data":{
+                    "labels": labels,
+                    "datasets":[
+                        {"label":seleccion + " " + unidad,
+                            "data":dat,
+                            "fill":false,
+                            "borderColor":"rgb(75, 192, 192)",
+                            "lineTension":0.1
+                        }
+                    ]
+             },
+             "options":{}
+         };
+    new Chart(ctx, params);
 }
 function readSingleFile(evt) {
     //Retrieve the first (and only!) File from the FileList object
@@ -339,6 +385,7 @@ var USUARIO = {
                     options += '<option value="'+el+'">'+el+'</option>';
                 }
             });
+            $('select[name="selectorfechas"]' ).empty();
             $('select[name="selectorfechas"]' ).append( options );
             $("#dialog-variables").dialog("open");
         }else {
@@ -360,6 +407,36 @@ var USUARIO = {
         if(data.output.valid){
             updateTips('Información guardada correctamente');
 	    window.location = 'usuario.php';
+        }else {
+	    updateTips('Error: ' + data.output.response.content);
+	}
+    },
+    getGraphs: function(id){
+        q.op = 'usrvar';
+	q.id = id;
+	UTIL.callAjaxRqst(q, this.getGraphshandler);
+    },
+    getGraphshandler: function(data){
+         UTIL.cursorNormal();
+        if(data.output.valid){
+            variablesGraficas = data.output.variables;
+            var Variables =[];
+            for(var j in variablesGraficas){
+                Variables.push(variablesGraficas[j].nombre);
+            }
+            var variables_unicas = [];
+            var options = '<option value="seleccione">Seleccione</option>';
+            $.each(Variables, function(i, el){
+                if($.inArray(el, variables_unicas) === -1){ 
+                    if(el !== "Presion Arterial"){
+                        variables_unicas.push(el);
+                        options += '<option value="'+el+'">'+el+'</option>';
+                    }
+                }
+            });
+            $('select[name="selectorvariables"]' ).empty();
+            $('select[name="selectorvariables"]' ).append( options );
+            $("#dialog-graficas").dialog("open");
         }else {
 	    updateTips('Error: ' + data.output.response.content);
 	}

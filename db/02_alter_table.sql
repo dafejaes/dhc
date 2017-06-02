@@ -52,3 +52,6 @@ INSERT INTO `dhc_perfiles` (`prf_id`, `prf_nombre`, `prf_descripcion`) VALUES
 (11, 'Usuarios - Cargar datos', NULL);
 INSERT INTO `dhc_perfiles` (`prf_id`, `prf_nombre`, `prf_descripcion`) VALUES
 (12, 'Usuarios - Ver solo cuenta propia', NULL);
+--SE CREA NUEVO PERFIL PARA GRAFICAS EJECUTADO 1 JUN 2017--
+INSERT INTO `dhc_perfiles` (`prf_id`, `prf_nombre`, `prf_descripcion`) VALUES
+(13, 'Usuarios - Ver graficas', NULL);
